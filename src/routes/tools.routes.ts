@@ -1,11 +1,27 @@
 import { Router } from 'express';
+import { getRepository } from 'typeorm';
 
+import Tool from '../models/Tool';
 import CreateToolService from '../services/CreateToolService';
+import FindToolsByTagService from '../services/FindToolsByTagService';
 
 const toolsRouter = Router();
 
-toolsRouter.get('/', (request, response) => {
-  return response.json({ ok: true });
+toolsRouter.get('/', async (request, response) => {
+  if (request.query.tag) {
+    const findTools = new FindToolsByTagService();
+
+    const tools = await findTools.execute({
+      tag: request.query.tag.toString(),
+    });
+
+    return response.json(tools);
+  }
+
+  const toolsRepository = getRepository(Tool);
+  const tools = await toolsRepository.find();
+
+  return response.json(tools);
 });
 
 toolsRouter.post('/', async (request, response) => {
