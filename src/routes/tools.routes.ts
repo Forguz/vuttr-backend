@@ -39,4 +39,13 @@ toolsRouter.post('/', async (request, response) => {
   return response.status(201).json(tool);
 });
 
+toolsRouter.delete('/:id', async (request, response) => {
+  const { id } = request.params;
+
+  const toolsRepository = getRepository(Tool);
+  toolsRepository.delete({ id });
+
+  return response.status(204).send();
+});
+
 export default toolsRouter;
