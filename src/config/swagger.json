@@ -37,6 +37,14 @@
         "tags": [
           "Tools"
         ],
+        "parameters": [
+          {
+            "name": "tag",
+            "in": "query",
+            "description": "Tag of the tool that we want to match",
+            "type": "string"
+          }
+        ],
         "summary": "Get all tools in database",
         "responses": {
           "200": {
@@ -58,7 +66,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/definitions/Tool"
+                "$ref": "#/definitions/ToolWithOutId"
               }
             }
           }
@@ -67,7 +75,7 @@
           "application/json"
         ],
         "responses": {
-          "200": {
+          "201": {
             "description": "OK",
             "schema": {
               "$ref": "#/definitions/Tool"
@@ -79,66 +87,26 @@
         }
       }
     },
-    "/cats/{id}": {
+    "/tools/{id}": {
       "parameters": [
         {
-          "name": "id",
           "in": "path",
+          "name": "id",
           "required": true,
-          "description": "ID of the cat that we want to match",
-          "type": "string"
+          "description": "Delete Tool with id",
+          "schema": {
+            "$ref": "#/definitions/id"
+          }
         }
       ],
-      "get": {
-        "tags": [
-          "Tools"
-        ],
-        "summary": "Get cat with given ID",
-        "parameters": [
-          {
-            "in": "path",
-            "name": "id",
-            "required": true,
-            "description": "Cat with id",
-            "schema": {
-              "$ref": "#/definitions/id"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "schema": {
-              "$ref": "#/definitions/Cat"
-            }
-          },
-          "404": {
-            "description": "Failed. Cat not found."
-          }
-        }
-      },
       "delete": {
-        "summary": "Delete cat with given ID",
+        "summary": "Delete tool with given ID",
         "tags": [
           "Tools"
         ],
-        "parameters": [
-          {
-            "in": "path",
-            "name": "id",
-            "required": true,
-            "description": "Delete Cat with id",
-            "schema": {
-              "$ref": "#/definitions/id"
-            }
-          }
-        ],
         "responses": {
-          "200": {
-            "description": "OK",
-            "schema": {
-              "$ref": "#/definitions/id"
-            }
+          "204": {
+            "description": "OK"
           },
           "404": {
             "description": "Failed. Cat not found."
@@ -148,12 +116,70 @@
     }
   },
   "definitions": {
+    "id": {
+      "properties": {
+        "uuid": {
+          "type": "string"
+        }
+      }
+    },
     "Tool": {
       "type": "object",
       "properties": {
         "id": {
-          "type": "string"
+          "properties": {
+            "uuid": {
+              "type": "string"
+            }
+          }
         },
+        "title": {
+          "in": "body",
+          "name": "title",
+          "required": true,
+          "description": "Tool title",
+          "type": "string",
+          "example": "Some title"
+        },
+        "link": {
+          "in": "body",
+          "name": "link",
+          "required": true,
+          "description": "Tool link",
+          "type": "string",
+          "example": "https://github.com/typicode/hotel"
+        },
+        "description": {
+          "in": "body",
+          "name": "description",
+          "required": true,
+          "description": "Tool description",
+          "type": "string",
+          "example": "Local app manager"
+        },
+        "tags": {
+          "in": "body",
+          "name": "tags",
+          "required": true,
+          "description": "Tool tags",
+          "type": "array",
+          "items": {
+            "type": "string",
+            "example": [
+              "organizing",
+              "webapps",
+              "domain",
+              "developer",
+              "https",
+              "proxy"
+            ]
+          }
+        }
+      }
+    },
+    "ToolWithOutId": {
+      "type": "object",
+      "properties": {
         "title": {
           "in": "body",
           "name": "title",
